@@ -12,31 +12,28 @@ import logica.Tarifa;
 import logica.Afiliado;
 import logica.Afiliados;
 
-        
-
-
-
 public class PersistenciaFacturas {
 
-    private static final String CONSULTA_MENSUAL = "select * from adn.facturas where month(fecha_emision)=? and year(fecha_emision)=?;";
-    private static final String CONSULTA_AFILIADO = "SELECT * FROM adn.facturas WHERE afiliadoced=? ;";
-    private static final String CONSULTA_ATRASADOS = "SELECT * FROM adn.facturas WHERE fecha_pago is null group by afiliadoced having count(*)>2;";
-    private static final String CONSULTA_IMPAGAS_AFILIADO = "SELECT * FROM adn.facturas WHERE afiliadoced=? and fecha_pago is null;";
-    private static final String DELETE_MENSUAL = "delete * from adn.facturas where month(fecha_emision)=? and year(fecha_emision)=?;";
-    private static final String DELETE_AFILIADO = "delete * from adn.facturas where afiliadoced=? and concepto='cuota' and month(fecha_emision)=? and year(fecha_emision)=?;";
-    private static final String INSERTAR_FACTURA = "INSERT INTO adn.facturas (`afiliadoced`,`fecha_emision`, `concepto`, `importe`) VALUES (?, ?, ?, ?)";
-    private static final String PAGAR_FACTURA = "UPDATE adn.facturas SET `fecha_pago` = ? WHERE idfactura=?;";
-   
-   
+    private final String CONSULTA_MENSUAL = "select * from adn.facturas where month(fecha_emision)=? and year(fecha_emision)=?;";
+    private final String CONSULTA_AFILIADO = "SELECT * FROM adn.facturas WHERE afiliadoced=? ;";
+    private final String CONSULTA_ATRASADOS = "SELECT * FROM adn.facturas WHERE fecha_pago is null group by afiliadoced having count(*)>2;";
+    private final String CONSULTA_IMPAGAS_AFILIADO = "SELECT * FROM adn.facturas WHERE afiliadoced=? and fecha_pago is null;";
+    private final String DELETE_MENSUAL = "delete * from adn.facturas where month(fecha_emision)=? and year(fecha_emision)=?;";
+    private final String DELETE_AFILIADO = "delete * from adn.facturas where afiliadoced=? and concepto='cuota' and month(fecha_emision)=? and year(fecha_emision)=?;";
+    private final String INSERTAR_FACTURA = "INSERT INTO adn.facturas (`afiliadoced`,`fecha_emision`, `concepto`, `importe`) VALUES (?, ?, ?, ?)";
+    private final String PAGAR_FACTURA = "UPDATE adn.facturas SET `fecha_pago` = ? WHERE idfactura=?;";
+
     public void facturacionMensual(int mes, int anio) throws ExcepcionConectar, ExcepcionInsertarFactura, ExcepcionCerrarConexion, ExcepcionListarAfiliados, ParseException {
-        Connection conexion = PersistenciaConexion.Conectar();
-        Afiliados afiliadosActivos = PersistenciaAfiliados.listarAfiliadosActivos();
+        PersistenciaConexion conectar = new PersistenciaConexion();
+        Connection conexion = conectar.Conectar();
+        PersistenciaAfiliados afiliados = new PersistenciaAfiliados();
+        Afiliados afiliadosActivos = afiliados.listarAfiliadosActivos();
         String fechaFacturacion = anio + "-" + mes + "-01";
         SimpleDateFormat formateador = new SimpleDateFormat("yyyy-MM-dd");
         Date fechaFactura = formateador.parse(fechaFacturacion);
         PersistenciaTarifas persistenciaTarifas = new PersistenciaTarifas();
         Tarifa tarifa = persistenciaTarifas.getUltimaTarifa();
-        for (int i=0; i<afiliadosActivos.largo(); i++){
+        for (int i = 0; i < afiliadosActivos.largo(); i++) {
             try {
                 Afiliado afiliado = afiliadosActivos.getAfiliado(i);
                 PreparedStatement consultaPreparada = conexion.prepareStatement(INSERTAR_FACTURA);
@@ -47,36 +44,39 @@ public class PersistenciaFacturas {
                 consultaPreparada.executeUpdate();
             } catch (SQLException ex) {
                 throw new ExcepcionInsertarFactura("Error al insertar la factura");
-            }finally {
-                PersistenciaConexion.cerrarConexion();
+            } finally {
+                conectar.cerrarConexion();
             }
         }
-    }    
-    
+    }
+
     public void procesarBajas() throws ExcepcionConectar, ExcepcionCerrarConexion, ExcepcionInactivarAfiliado {
-        Connection conexion = PersistenciaConexion.Conectar();
-      
+        PersistenciaConexion conectar = new PersistenciaConexion();
+        Connection conexion = conectar.Conectar();
+
         try {
             PreparedStatement declaracionPreparada = conexion.prepareStatement(CONSULTA_ATRASADOS);
             ResultSet resultado = declaracionPreparada.executeQuery();
             while (resultado.next()) {
                 Afiliado afiliado = new Afiliado();
                 afiliado.setCedula(resultado.getString("afiliadoced"));
-                PersistenciaAfiliados.inactivarAfiliado(afiliado);
-                
+                PersistenciaAfiliados afiliados = new PersistenciaAfiliados();
+                afiliados.inactivarAfiliado(afiliado);
+
             }
-           
+
         } catch (SQLException ex) {
             throw new ExcepcionInactivarAfiliado("No se pudo modificar estado del afiliados");
         } finally {
-            PersistenciaConexion.cerrarConexion();
-        }        
-    }   
-    
-    public  Facturas listarFacturasAfiliado(Afiliado afiliado) throws ExcepcionConectar, ExcepcionCerrarConexion, ExcepcionListarFacturas {
+            conectar.cerrarConexion();
+        }
+    }
+
+    public Facturas listarFacturasAfiliado(Afiliado afiliado) throws ExcepcionConectar, ExcepcionCerrarConexion, ExcepcionListarFacturas {
         ArrayList<Factura> listafacturas = new ArrayList<>();
         Facturas facturas = new Facturas();
-        Connection conexion = PersistenciaConexion.Conectar();
+        PersistenciaConexion conectar = new PersistenciaConexion();
+        Connection conexion = conectar.Conectar();
 
         try {
             PreparedStatement consultaPreparada = conexion.prepareStatement(CONSULTA_AFILIADO);
@@ -95,15 +95,16 @@ public class PersistenciaFacturas {
         } catch (SQLException ex) {
             throw new ExcepcionListarFacturas("No se pudo listar facturas");
         } finally {
-            PersistenciaConexion.cerrarConexion();
+            conectar.cerrarConexion();
         }
         return facturas;
     }
-    
+
     public Facturas listarImpagasAfiliado(Afiliado afiliado) throws ExcepcionConectar, ExcepcionCerrarConexion, ExcepcionListarFacturas {
         ArrayList<Factura> listafacturas = new ArrayList<>();
         Facturas facturas = new Facturas();
-        Connection conexion = PersistenciaConexion.Conectar();
+        PersistenciaConexion conectar = new PersistenciaConexion();
+        Connection conexion = conectar.Conectar();
 
         try {
             PreparedStatement consultaPreparada = conexion.prepareStatement(CONSULTA_IMPAGAS_AFILIADO);
@@ -122,13 +123,9 @@ public class PersistenciaFacturas {
         } catch (SQLException ex) {
             throw new ExcepcionListarFacturas("No se pudo listar facturas");
         } finally {
-            PersistenciaConexion.cerrarConexion();
+            conectar.cerrarConexion();
         }
         return facturas;
     }
-    
-    
 
-
-    
 }

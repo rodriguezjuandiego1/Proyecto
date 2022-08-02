@@ -3,6 +3,8 @@ package logica;
 
 import excepciones.ExcepcionAfiliado;
 import excepciones.ExcepcionCedulaNoEncontrada;
+import excepciones.ExcepcionCerrarConexion;
+import excepciones.ExcepcionConectar;
 import excepciones.ExcepcionConsultaCedula;
 import excepciones.ExcepcionConsultaUsuario;
 import excepciones.ExcepcionInactivarAfiliado;
@@ -18,43 +20,53 @@ import persistencia.PersistenciaUsuarios;
 
 public class Logica {
     
-    public static String consultarUsuario (Usuario usuario) throws ExcepcionConsultaUsuario{
-        return PersistenciaUsuarios.consultar(usuario);
+    public String consultarUsuario (Usuario usuario) throws ExcepcionConsultaUsuario, ExcepcionConectar, ExcepcionCerrarConexion{
+        PersistenciaUsuarios usuarios=new PersistenciaUsuarios();
+        return usuarios.consultar(usuario);
     }
     
-    public static Afiliados listadoAfiliadosActivos() throws ExcepcionListarAfiliados{
-        return PersistenciaAfiliados.listarAfiliadosActivos();
+    public Afiliados listadoAfiliadosActivos() throws ExcepcionListarAfiliados, ExcepcionConectar, ExcepcionCerrarConexion{
+        PersistenciaAfiliados afiliados=new PersistenciaAfiliados();
+        return afiliados.listarAfiliadosActivos();
     }
     
-    public static Afiliado consultaAfiliadoPorCedula(Afiliado afiliado) throws  ExcepcionConsultaCedula, ExcepcionCedulaNoEncontrada{
-        return PersistenciaAfiliados.consultaCedula(afiliado);
+    public Afiliado consultaAfiliadoPorCedula(Afiliado afiliado) throws  ExcepcionConsultaCedula, ExcepcionCedulaNoEncontrada, ExcepcionConectar, ExcepcionCerrarConexion{
+        PersistenciaAfiliados afiliados = new PersistenciaAfiliados();
+        return afiliados.consultaCedula(afiliado);
     }
     
-    public static String inactivarAfiliado(Afiliado afiliado) throws ExcepcionInactivarAfiliado{
-        return PersistenciaAfiliados.inactivarAfiliado(afiliado);
+    public String inactivarAfiliado(Afiliado afiliado) throws ExcepcionInactivarAfiliado, ExcepcionCerrarConexion, ExcepcionConectar{
+        PersistenciaAfiliados afiliados = new PersistenciaAfiliados();
+        return afiliados.inactivarAfiliado(afiliado);
     }
     
-    public static Negocios listaNegocios() throws ExcepcionNegocio{
-        return PersistenciaNegocios.listaNegocios();
+    public Negocios listaNegocios() throws ExcepcionNegocio, ExcepcionCerrarConexion, ExcepcionConectar{
+        PersistenciaNegocios negocios= new PersistenciaNegocios();
+        return negocios.listaNegocios();
     }
     
-    public static void insertarAfiliado(Afiliado afiliado) throws ExcepcionInsertarAfiliado{
-        PersistenciaAfiliados.insertarAfiliado(afiliado);
+    public void insertarAfiliado(Afiliado afiliado) throws ExcepcionInsertarAfiliado, ExcepcionConectar, ExcepcionCerrarConexion{
+        PersistenciaAfiliados afiliados = new PersistenciaAfiliados();
+        afiliados.insertarAfiliado(afiliado);
     }
     
-    public static void insertarAfiliacion(Afiliacion afiliacion) throws ExcepcionInsertarAfiliacion{
-        PersistenciaAfiliacion.insertar(afiliacion);
+    public void insertarAfiliacion(Afiliacion afiliacion) throws ExcepcionInsertarAfiliacion, ExcepcionConectar, ExcepcionCerrarConexion{
+        PersistenciaAfiliacion afiliaciones=new PersistenciaAfiliacion();
+        afiliaciones.insertar(afiliacion);
     }
     
-    public static Negocio consultarNegocioPorNombre(Negocio negocio) throws ExcepcionNegocio{
-        return PersistenciaNegocios.consultarNegocioPorNombre(negocio);
+    public Negocio consultarNegocioPorNombre(Negocio negocio) throws ExcepcionNegocio, ExcepcionConectar, ExcepcionCerrarConexion{
+        PersistenciaNegocios negocios= new PersistenciaNegocios();
+        return negocios.consultarNegocioPorNombre(negocio);
     }
 
-    public static Negocio consultarNegocioPorId(Negocio negocio) throws ExcepcionNegocio{
-        return PersistenciaNegocios.consultarNegocioPorId(negocio);
+    public Negocio consultarNegocioPorId(Negocio negocio) throws ExcepcionNegocio, ExcepcionConectar, ExcepcionCerrarConexion{
+        PersistenciaNegocios negocios=new PersistenciaNegocios();
+        return negocios.consultarNegocioPorId(negocio);
     }
 
-    public static void editarAfiliado(Afiliado afiliado) throws ExcepcionAfiliado{
-        PersistenciaAfiliados.editarAfiliado(afiliado);
+    public void editarAfiliado(Afiliado afiliado) throws ExcepcionAfiliado, ExcepcionConectar, ExcepcionCerrarConexion{
+        PersistenciaAfiliados afiliados=new PersistenciaAfiliados();
+        afiliados.editarAfiliado(afiliado);
     }
 }

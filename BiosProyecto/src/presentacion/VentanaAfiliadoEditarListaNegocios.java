@@ -1,5 +1,7 @@
 package presentacion;
 
+import excepciones.ExcepcionCerrarConexion;
+import excepciones.ExcepcionConectar;
 import excepciones.ExcepcionNegocio;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
@@ -32,13 +34,14 @@ public class VentanaAfiliadoEditarListaNegocios extends javax.swing.JFrame {
         limpiarTabla();
         Negocios negocios;
         try {
-            negocios = Logica.listaNegocios();
+            Logica logica=new Logica();
+            negocios = logica.listaNegocios();
             String[] datosFilaTabla = new String[1];
             for (Negocio negocio : negocios.getNegocios()) {
                 datosFilaTabla[0] = negocio.getNombre();
                 model.addRow(datosFilaTabla);
             }
-        } catch (ExcepcionNegocio ex) {
+        } catch (ExcepcionNegocio | ExcepcionCerrarConexion | ExcepcionConectar ex) {
             JOptionPane.showMessageDialog(null, ex.getMessage());
         }
 

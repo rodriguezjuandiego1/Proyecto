@@ -1,6 +1,8 @@
 package presentacion;
 
 import excepciones.ExcepcionCedulaNoEncontrada;
+import excepciones.ExcepcionCerrarConexion;
+import excepciones.ExcepcionConectar;
 import excepciones.ExcepcionConsultaCedula;
 import excepciones.ExcepcionInactivarAfiliado;
 import excepciones.ExcepcionListarAfiliados;
@@ -32,7 +34,8 @@ public class VentanaAfiliados extends javax.swing.JFrame {
         limpiarTabla();
         try {
             Afiliados afiliados;
-            afiliados = Logica.listadoAfiliadosActivos();
+            Logica logica=new Logica();
+            afiliados = logica.listadoAfiliadosActivos();
             String[] datosFilaTabla = new String[3];
             for (Afiliado afiliado : afiliados.getListaAfiliados()) {
                 datosFilaTabla[0] = afiliado.getCedula();
@@ -41,7 +44,7 @@ public class VentanaAfiliados extends javax.swing.JFrame {
                 model.addRow(datosFilaTabla);
             }
 
-        } catch ( ExcepcionListarAfiliados ex) {
+        } catch ( ExcepcionListarAfiliados | ExcepcionConectar | ExcepcionCerrarConexion ex) {
             JOptionPane.showMessageDialog(null, ex.getMessage());
         }
 
@@ -245,14 +248,15 @@ public class VentanaAfiliados extends javax.swing.JFrame {
             String cedulaIngresada = campoBuscar.getText();
             afiliadoBuscado.setCedula(cedulaIngresada);
             try {
-                afiliadoEncontrado = Logica.consultaAfiliadoPorCedula(afiliadoBuscado);
+                Logica logica=new Logica();
+                afiliadoEncontrado = logica.consultaAfiliadoPorCedula(afiliadoBuscado);
                 limpiarTabla();
                 String[] datos = new String[3];
                 datos[0] = afiliadoEncontrado.getCedula();
                 datos[1] = afiliadoEncontrado.getNombre();
                 datos[2] = afiliadoEncontrado.getApellido();
                 model.addRow(datos);
-            } catch (ExcepcionConsultaCedula | ExcepcionCedulaNoEncontrada ex) {
+            } catch (ExcepcionConsultaCedula | ExcepcionCedulaNoEncontrada | ExcepcionConectar | ExcepcionCerrarConexion ex) {
                 JOptionPane.showMessageDialog(null, ex.getMessage());
             }
             campoBuscar.setText("");
@@ -281,8 +285,9 @@ public class VentanaAfiliados extends javax.swing.JFrame {
             afiliadoBuscado.setCedula(cedulaDelRegistroSeleccionado);
             Afiliado afiliadoEncontrado = null;
             try {
-                afiliadoEncontrado = Logica.consultaAfiliadoPorCedula(afiliadoBuscado);
-            } catch ( ExcepcionConsultaCedula | ExcepcionCedulaNoEncontrada ex) {
+                Logica logica=new Logica();
+                afiliadoEncontrado = logica.consultaAfiliadoPorCedula(afiliadoBuscado);
+            } catch ( ExcepcionConsultaCedula | ExcepcionCedulaNoEncontrada | ExcepcionConectar | ExcepcionCerrarConexion ex) {
                 JOptionPane.showMessageDialog(this, ex.getMessage());
             }
             this.dispose();
@@ -311,11 +316,12 @@ public class VentanaAfiliados extends javax.swing.JFrame {
             String mensaje;
             if (respuesta == 0) {
                 try {
-                    mensaje = Logica.inactivarAfiliado(afiliado);
+                    Logica logica=new Logica();
+                    mensaje = logica.inactivarAfiliado(afiliado);
                     JOptionPane.showMessageDialog(null, mensaje);
                     limpiarTabla();
                     cargarTabla();
-                } catch (ExcepcionInactivarAfiliado  ex) {
+                } catch (ExcepcionInactivarAfiliado | ExcepcionCerrarConexion | ExcepcionConectar  ex) {
                     JOptionPane.showMessageDialog(null, ex.getMessage());
                 }
             }
