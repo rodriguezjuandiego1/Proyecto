@@ -1,11 +1,10 @@
 package presentacion;
 
 import excepciones.ExcepcionAfiliado;
-import excepciones.ExcepcionInsertarAfiliacion;
-import excepciones.ExcepcionInsertarAfiliado;
+import excepciones.ExcepcionCerrarConexion;
+import excepciones.ExcepcionConectar;
 import excepciones.ExcepcionNegocio;
 import javax.swing.JOptionPane;
-import logica.Afiliacion;
 import logica.Afiliado;
 import logica.Logica;
 import logica.Negocio;
@@ -33,8 +32,9 @@ public class VentanaAfiliadosEditar extends javax.swing.JFrame {
         negocioBuscado.setId(afiliado.getNegocio());
         Negocio negocioEncontrado = new Negocio();
         try {
-            negocioEncontrado = Logica.consultarNegocioPorId(negocioBuscado);
-        } catch (ExcepcionNegocio ex) {
+            Logica logica=new Logica();
+            negocioEncontrado = logica.consultarNegocioPorId(negocioBuscado);
+        } catch (ExcepcionNegocio | ExcepcionConectar | ExcepcionCerrarConexion ex) {
             JOptionPane.showMessageDialog(this, ex.getMessage());
         }
         campoNegocio.setText(negocioEncontrado.getNombre());
@@ -328,28 +328,21 @@ public class VentanaAfiliadosEditar extends javax.swing.JFrame {
             afiliado.setTelefono(campoTelefono.getText());
             afiliado.setEmail(campoMail.getText());
             java.util.Date nacimiento = dateChooserNacimiento.getDate();
-            //try {
             long milisegundos = nacimiento.getTime();
             java.sql.Date nacimiento2 = new java.sql.Date(milisegundos);
             afiliado.setNacimiento(nacimiento2);
-//        } catch (NullPointerException e) {
-//            JOptionPane.showMessageDialog(null, "Seleccione una fecha de nacimiento");
-//        }
             Negocio negocio = new Negocio();
             negocio.setNombre(campoNegocio.getText());
             Negocio negocioEncontrado = new Negocio();
-            //try {
-            negocioEncontrado = Logica.consultarNegocioPorNombre(negocio);
-//        } catch (ExcepcionNegocio ex) {
-//            JOptionPane.showMessageDialog(this, ex.getMessage());
-//        }
+            Logica logica=new Logica();
+            negocioEncontrado = logica.consultarNegocioPorNombre(negocio);
             afiliado.setNegocio(negocioEncontrado.getId());
-            //afiliado.setEstado("activo");
 
             int respuesta = JOptionPane.showConfirmDialog(null, "¿Confirma modificaciones?");
             if (respuesta == 0) {
                 try {
-                    Logica.editarAfiliado(afiliado);
+                    Logica logica2=new Logica();
+                    logica2.editarAfiliado(afiliado);
                     JOptionPane.showMessageDialog(this, "Modificación realizada con éxito");
                 } catch (ExcepcionAfiliado e) {
                     JOptionPane.showMessageDialog(this, e.getMessage());

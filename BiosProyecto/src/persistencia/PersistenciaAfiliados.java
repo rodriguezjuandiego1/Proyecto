@@ -2,25 +2,26 @@ package persistencia;
 
 import excepciones.*;
 import java.sql.*;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import logica.Afiliado;
 import logica.Afiliados;
 
 public class PersistenciaAfiliados {
 
-    private static final String CONSULTA_ACTIVOS = "SELECT * FROM adn.afiliados WHERE estado='activo';";
-    private static final String CONSULTA_CEDULA = "SELECT * FROM adn.afiliados WHERE cedula=? and estado='activo';";
-    private static final String INACTIVAR = "UPDATE `adn`.`afiliados` SET `estado` = 'inactivo' WHERE (`cedula` = ?);";
-    private static final String INSERTAR = "INSERT INTO `adn`.`afiliados` (`cedula`, `nombre`, `apellido`, "
+    private final String CONSULTA_ACTIVOS = "SELECT * FROM adn.afiliados WHERE estado='activo';";
+    private final String CONSULTA_CEDULA = "SELECT * FROM adn.afiliados WHERE cedula=? and estado='activo';";
+    private final String INACTIVAR = "UPDATE `adn`.`afiliados` SET `estado` = 'inactivo' WHERE (`cedula` = ?);";
+    private final String INSERTAR = "INSERT INTO `adn`.`afiliados` (`cedula`, `nombre`, `apellido`, "
             + "`nacionalidad`, `direccion`, `telefono`, `email`, `nacimiento`, `negocios_idNegocios`, `estado`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
-    private static final String UPDATE = "UPDATE `adn`.`afiliados` SET `nombre` = ?, `apellido` = ?, `nacionalidad` = ?, `direccion` = ?,"
+    private final String UPDATE = "UPDATE `adn`.`afiliados` SET `nombre` = ?, `apellido` = ?, `nacionalidad` = ?, `direccion` = ?,"
             + "`telefono` = ?, `email` = ?, `nacimiento` = ?, `negocios_idNegocios` = ? WHERE (`cedula` = ?);";
 
-    public static Afiliados listarAfiliadosActivos() throws ExcepcionListarAfiliados {
+    public Afiliados listarAfiliadosActivos() throws ExcepcionListarAfiliados, ExcepcionConectar, ExcepcionCerrarConexion {
+
         Afiliados afiliados = new Afiliados();
-        Connection conexion = PersistenciaConexion.Conectar();
+        PersistenciaConexion conectar = new PersistenciaConexion();
+        Connection conexion = conectar.Conectar();
         try {
+
             PreparedStatement declaracionPreparada = conexion.prepareStatement(CONSULTA_ACTIVOS);
             ResultSet resultado = declaracionPreparada.executeQuery();
             while (resultado.next()) {
@@ -31,16 +32,17 @@ public class PersistenciaAfiliados {
                 afiliados.setAfiliado(afiliado);
             }
         } catch (SQLException ex) {
-            throw new ExcepcionListarAfiliados("ERROR Comuníquese con soporte");
+            throw new ExcepcionListarAfiliados("No se pudo listar los afiliados activos");
         } finally {
-            PersistenciaConexion.cerrarConexion();
+            conectar.cerrarConexion();
         }
         return afiliados;
     }
 
-    public static Afiliado consultaCedula(Afiliado afiliado) throws ExcepcionConsultaCedula, ExcepcionCedulaNoEncontrada {
+    public Afiliado consultaCedula(Afiliado afiliado) throws ExcepcionConsultaCedula, ExcepcionCedulaNoEncontrada, ExcepcionConectar, ExcepcionCerrarConexion {
         ResultSet resultado = null;
-        Connection conexion = PersistenciaConexion.Conectar();
+        PersistenciaConexion conectar = new PersistenciaConexion();
+        Connection conexion = conectar.Conectar();
         try {
             PreparedStatement consultaPreparada = conexion.prepareStatement(CONSULTA_CEDULA);
             consultaPreparada.setString(1, afiliado.getCedula());
@@ -63,39 +65,42 @@ public class PersistenciaAfiliados {
                 throw new ExcepcionCedulaNoEncontrada("Cédula no encontrada");
             }
         } catch (SQLException ex) {
-            throw new ExcepcionConsultaCedula("ERROR Comuníquese con soporte");
+            throw new ExcepcionConsultaCedula("No se pudo consultar cédula");
 
         } finally {
-            PersistenciaConexion.cerrarConexion();
+            conectar.cerrarConexion();
         }
         return afiliado;
     }
 
-    public static String inactivarAfiliado(Afiliado afiliado) throws ExcepcionInactivarAfiliado {
-        int x;
+    public String inactivarAfiliado(Afiliado afiliado) throws ExcepcionInactivarAfiliado, ExcepcionConectar, ExcepcionCerrarConexion {
+        int resultado;
         String mensaje;
+        PersistenciaConexion conectar = new PersistenciaConexion();
+        Connection conexion = conectar.Conectar();
         try {
-            Connection conexion = PersistenciaConexion.Conectar();
+
             PreparedStatement consultaPreparada = conexion.prepareStatement(INACTIVAR);
 
             consultaPreparada.setString(1, afiliado.getCedula());
-            x = consultaPreparada.executeUpdate();
-            if (x == 0) {
+            resultado = consultaPreparada.executeUpdate();
+            if (resultado == 0) {
                 mensaje = "No se pudo realizar la desafiliación";
             } else {
                 mensaje = "Desafiliación realizada correctamente";
             }
         } catch (SQLException ex) {
-            throw new ExcepcionInactivarAfiliado("ERROR Comuníquese con soporte");
+            throw new ExcepcionInactivarAfiliado("No se pudo realizar la desafiliación");
         } finally {
-            PersistenciaConexion.cerrarConexion();
+            conectar.cerrarConexion();
         }
         return mensaje;
 
     }
 
-    public static void insertarAfiliado(Afiliado afiliado) throws ExcepcionInsertarAfiliado {
-        Connection conexion = PersistenciaConexion.Conectar();
+    public void insertarAfiliado(Afiliado afiliado) throws ExcepcionInsertarAfiliado, ExcepcionConectar, ExcepcionCerrarConexion {
+        PersistenciaConexion conectar = new PersistenciaConexion();
+        Connection conexion = conectar.Conectar();
         try {
             PreparedStatement consultaPreparada = conexion.prepareStatement(INSERTAR);
             consultaPreparada.setString(1, afiliado.getCedula());
@@ -112,17 +117,18 @@ public class PersistenciaAfiliados {
             consultaPreparada.executeUpdate();
 
         } catch (SQLException ex) {
-            ex.printStackTrace();
-            throw new ExcepcionInsertarAfiliado("ERROR Comuníquese con soporte");
+            throw new ExcepcionInsertarAfiliado("No se pudo insertar un nuevo afiliado");
         } finally {
-            PersistenciaConexion.cerrarConexion();
+            conectar.cerrarConexion();
         }
     }
 
-    public static void editarAfiliado(Afiliado afiliado) throws ExcepcionAfiliado {
+    public void editarAfiliado(Afiliado afiliado) throws ExcepcionAfiliado, ExcepcionConectar, ExcepcionCerrarConexion {
         int registrosModificados;
+        PersistenciaConexion conectar = new PersistenciaConexion();
+        Connection conexion = conectar.Conectar();
         try {
-            Connection conexion = PersistenciaConexion.Conectar();
+
             PreparedStatement consultaPreparada = conexion.prepareStatement(UPDATE);
             consultaPreparada.setString(1, afiliado.getNombre());
             consultaPreparada.setString(2, afiliado.getApellido());
@@ -134,14 +140,14 @@ public class PersistenciaAfiliados {
             consultaPreparada.setString(7, fecha);
             consultaPreparada.setString(8, afiliado.getNegocio());
             consultaPreparada.setString(9, afiliado.getCedula());
-            registrosModificados=consultaPreparada.executeUpdate();
-            if(registrosModificados==0){
+            registrosModificados = consultaPreparada.executeUpdate();
+            if (registrosModificados == 0) {
                 throw new SQLException();
             }
         } catch (SQLException ex) {
             throw new ExcepcionAfiliado("ERROR Comuníquese con soporte");
-        } finally{
-            PersistenciaConexion.cerrarConexion();
+        } finally {
+            conectar.cerrarConexion();
         }
 
     }
