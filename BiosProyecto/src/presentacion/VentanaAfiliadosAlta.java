@@ -321,21 +321,18 @@ public class VentanaAfiliadosAlta extends javax.swing.JFrame {
             afiliado.setTelefono(campoTelefono.getText());
             afiliado.setEmail(campoEmail.getText());
             java.util.Date nacimiento = dateChooserNacimiento.getDate();
-            //try {
+        
             long milisegundos = nacimiento.getTime();
             java.sql.Date nacimiento2 = new java.sql.Date(milisegundos);
             afiliado.setNacimiento(nacimiento2);
-//        } catch (NullPointerException e) {
-//            JOptionPane.showMessageDialog(null, "Seleccione una fecha de nacimiento");
-//        }
+
             Negocio negocio = new Negocio();
             negocio.setNombre(campoNegocio.getText());
             Negocio negocioEncontrado = new Negocio();
-            //try {
-            negocioEncontrado = Logica.consultarNegocioPorNombre(negocio);
-//        } catch (ExcepcionNegocio ex) {
-//            JOptionPane.showMessageDialog(this, ex.getMessage());
-//        }
+ 
+            Logica logica=new Logica();
+            negocioEncontrado = logica.consultarNegocioPorNombre(negocio);
+
             afiliado.setNegocio(negocioEncontrado.getId());
             afiliado.setEstado("activo");
 
@@ -349,8 +346,9 @@ public class VentanaAfiliadosAlta extends javax.swing.JFrame {
             int respuesta = JOptionPane.showConfirmDialog(null, "¿Confirma la afiliación?");
             if (respuesta == 0) {
                 try {
-                    Logica.insertarAfiliado(afiliado);
-                    Logica.insertarAfiliacion(afiliacion);
+                    Logica logica2=new Logica();
+                    logica2.insertarAfiliado(afiliado);
+                    logica2.insertarAfiliacion(afiliacion);
                     JOptionPane.showMessageDialog(null, "Afiliación realizada con éxito");
                     this.dispose();
                     VentanaAfiliados va = new VentanaAfiliados();
