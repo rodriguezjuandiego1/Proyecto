@@ -29,7 +29,7 @@ public class PersistenciaAfiliados {
                 afiliado.setCedula(resultado.getString("cedula"));
                 afiliado.setNombre(resultado.getString("nombre"));
                 afiliado.setApellido(resultado.getString("apellido"));
-                afiliados.setAfiliado(afiliado);
+                afiliados.agregarAfiliado(afiliado);
             }
         } catch (SQLException ex) {
             throw new ExcepcionListarAfiliados("No se pudo listar los afiliados activos");
