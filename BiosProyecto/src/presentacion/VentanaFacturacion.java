@@ -10,21 +10,23 @@ import excepciones.ExcepcionConectar;
 import excepciones.ExcepcionInactivarAfiliado;
 import excepciones.ExcepcionInsertarFactura;
 import excepciones.ExcepcionListarAfiliados;
+import java.sql.SQLException;
 import java.text.ParseException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.JOptionPane;
 import persistencia.PersistenciaFacturas;
 
 /**
  *
  * @author cardo
  */
-public class VentanaFacturacion2 extends javax.swing.JFrame {
+public class VentanaFacturacion extends javax.swing.JFrame {
 
     /**
      * Creates new form VentanaFacturacion2
      */
-    public VentanaFacturacion2() {
+    public VentanaFacturacion() {
         initComponents();
     }
 
@@ -57,9 +59,11 @@ public class VentanaFacturacion2 extends javax.swing.JFrame {
         jTextField2.setText("jTextField2");
 
         Procesar.setText("jButton1");
-        Procesar.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
+        Procesar.addActionListener((java.awt.event.ActionEvent evt) -> {
+            try {
                 ProcesarActionPerformed(evt);
+            } catch (SQLException ex) {
+                Logger.getLogger(VentanaFacturacion.class.getName()).log(Level.SEVERE, null, ex);
             }
         });
 
@@ -105,17 +109,20 @@ public class VentanaFacturacion2 extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void ProcesarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ProcesarActionPerformed
+    private void ProcesarActionPerformed(java.awt.event.ActionEvent evt) throws SQLException {//GEN-FIRST:event_ProcesarActionPerformed
         // TODO add your handling code here
-        int mes = 10; int anio = 2022;
+        //int mes = 10; int anio = 2022;
+        String mensaje=null;
         PersistenciaFacturas persistenciaFacturas;
         persistenciaFacturas = new PersistenciaFacturas();
         try {
             persistenciaFacturas.procesarBajas();
-            persistenciaFacturas.facturacionMensual(mes, anio);
+            mensaje = persistenciaFacturas.facturacionMensual();
         } catch (ExcepcionConectar | ExcepcionInsertarFactura | ExcepcionCerrarConexion | ExcepcionListarAfiliados | ParseException | ExcepcionInactivarAfiliado ex) {
-            Logger.getLogger(VentanaFacturacion2.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(VentanaFacturacion.class.getName()).log(Level.SEVERE, null, ex);
         }
+      
+        JOptionPane.showMessageDialog(null, mensaje);
     }//GEN-LAST:event_ProcesarActionPerformed
 
     /**
@@ -143,7 +150,7 @@ public class VentanaFacturacion2 extends javax.swing.JFrame {
 
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(() -> {
-            new VentanaFacturacion2().setVisible(true);
+            new VentanaFacturacion().setVisible(true);
         });
     }
 

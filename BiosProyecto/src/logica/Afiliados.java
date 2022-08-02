@@ -13,8 +13,17 @@ public class Afiliados {
     }
 
     
-    public void setAfiliado(Afiliado afiliado){
+    public void agregarAfiliado(Afiliado afiliado){
         lista.add(afiliado);
+    }
+
+    public int size() {
+        return lista.size();
+       
+    }
+
+    public Afiliado obtenerAfiliado(int i) {
+        return lista.get(i);
     }
     
     
