@@ -12,7 +12,7 @@ public class Negocios {
     }
 
         
-    public void setNegocio(Negocio negocio){
+    public void agregarNegocio(Negocio negocio){
         negocios.add(negocio);
     }
     

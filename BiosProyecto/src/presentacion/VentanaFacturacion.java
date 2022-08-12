@@ -9,9 +9,12 @@ import excepciones.ExcepcionCerrarConexion;
 import excepciones.ExcepcionConectar;
 import excepciones.ExcepcionInactivarAfiliado;
 import excepciones.ExcepcionInsertarFactura;
+import excepciones.ExcepcionInsertarNotificacion;
 import excepciones.ExcepcionListarAfiliados;
 import java.sql.SQLException;
 import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JOptionPane;
@@ -24,11 +27,31 @@ import persistencia.PersistenciaFacturas;
 public class VentanaFacturacion extends javax.swing.JFrame {
 
     /**
-     * Creates new form VentanaFacturacion2
+     * Creates new form VentanaFacturacion
+     * @throws excepciones.ExcepcionConectar
+     * @throws java.sql.SQLException
+     * @throws java.text.ParseException
      */
     public VentanaFacturacion() {
         initComponents();
+        mostrarFecha();
     }
+    
+    private void mostrarFecha(){
+        PersistenciaFacturas persistenciaFacturas = new PersistenciaFacturas();
+        Date fechaFactura=null;
+        try {
+            fechaFactura = persistenciaFacturas.nuevaFechaFacturacion();
+            
+        } catch (ExcepcionConectar | SQLException | ParseException ex) {
+            JOptionPane.showMessageDialog(this, ex.getMessage());
+        }
+        SimpleDateFormat fechaFacturacion = new SimpleDateFormat("dd/MM/yyyy");
+        //System.out.println(fechaFactura);
+        String fechaAFacturar = fechaFacturacion.format(fechaFactura);
+        labelFechaFactura.setText(fechaAFacturar);
+    }
+    
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -39,31 +62,38 @@ public class VentanaFacturacion extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jLabel1 = new javax.swing.JLabel();
-        jLabel2 = new javax.swing.JLabel();
-        jTextField1 = new javax.swing.JTextField();
-        jLabel3 = new javax.swing.JLabel();
-        jTextField2 = new javax.swing.JTextField();
-        Procesar = new javax.swing.JButton();
+        jLabel4 = new javax.swing.JLabel();
+        jLabel5 = new javax.swing.JLabel();
+        jLabel6 = new javax.swing.JLabel();
+        jLabel7 = new javax.swing.JLabel();
+        labelFechaFactura = new javax.swing.JLabel();
+        jLabel9 = new javax.swing.JLabel();
+        jTextField3 = new javax.swing.JTextField();
+        jButton1 = new javax.swing.JButton();
+
+        jLabel4.setText("jLabel4");
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
-        jLabel1.setText("FACTURACION");
+        jLabel5.setText("FACTURACION");
 
-        jLabel2.setText("Mes abierto");
+        jLabel6.setText("Fecha a facturar:");
 
-        jTextField1.setText("jTextField1");
+        labelFechaFactura.setText("jLabel8");
 
-        jLabel3.setText("Solo Afiliado");
+        jLabel9.setText("Solo afiliado:");
 
-        jTextField2.setText("jTextField2");
+        jTextField3.setText("jTextField3");
+        jTextField3.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jTextField3ActionPerformed(evt);
+            }
+        });
 
-        Procesar.setText("jButton1");
-        Procesar.addActionListener((java.awt.event.ActionEvent evt) -> {
-            try {
-                ProcesarActionPerformed(evt);
-            } catch (SQLException ex) {
-                Logger.getLogger(VentanaFacturacion.class.getName()).log(Level.SEVERE, null, ex);
+        jButton1.setText("Procesar");
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton1ActionPerformed(evt);
             }
         });
 
@@ -74,56 +104,63 @@ public class VentanaFacturacion extends javax.swing.JFrame {
             .addGroup(layout.createSequentialGroup()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(49, 49, 49)
-                        .addComponent(jLabel1))
+                        .addGap(52, 52, 52)
+                        .addComponent(jLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, 132, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(layout.createSequentialGroup()
-                        .addContainerGap()
-                        .addComponent(jLabel2)
+                        .addGap(36, 36, 36)
+                        .addComponent(jLabel6)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(18, 18, 18)
-                        .addComponent(jLabel3)
+                        .addComponent(labelFechaFactura)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addComponent(jLabel7)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(jLabel9)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jTextField3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(150, 150, 150)
-                        .addComponent(Procesar)))
-                .addContainerGap(16, Short.MAX_VALUE))
+                        .addGap(141, 141, 141)
+                        .addComponent(jButton1)))
+                .addContainerGap(37, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jLabel1)
-                .addGap(30, 30, 30)
+                .addGap(24, 24, 24)
+                .addComponent(jLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(24, 24, 24)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel2)
-                    .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel3)
-                    .addComponent(jTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(62, 62, 62)
-                .addComponent(Procesar)
-                .addContainerGap(117, Short.MAX_VALUE))
+                    .addComponent(jLabel6)
+                    .addComponent(jLabel7)
+                    .addComponent(labelFechaFactura)
+                    .addComponent(jLabel9)
+                    .addComponent(jTextField3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(43, 43, 43)
+                .addComponent(jButton1)
+                .addContainerGap(126, Short.MAX_VALUE))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void ProcesarActionPerformed(java.awt.event.ActionEvent evt) throws SQLException {//GEN-FIRST:event_ProcesarActionPerformed
-        // TODO add your handling code here
-        //int mes = 10; int anio = 2022;
-        String mensaje=null;
-        PersistenciaFacturas persistenciaFacturas;
-        persistenciaFacturas = new PersistenciaFacturas();
+    private void jTextField3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField3ActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jTextField3ActionPerformed
+
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+        String mensaje1=null;
+        String mensaje2=null;
+        String mensaje3=null;
+        PersistenciaFacturas persistenciaFacturas = new PersistenciaFacturas();
         try {
-            persistenciaFacturas.procesarBajas();
-            mensaje = persistenciaFacturas.facturacionMensual();
-        } catch (ExcepcionConectar | ExcepcionInsertarFactura | ExcepcionCerrarConexion | ExcepcionListarAfiliados | ParseException | ExcepcionInactivarAfiliado ex) {
+            java.util.Date fechaFactura = persistenciaFacturas.nuevaFechaFacturacion();
+            mensaje1 = persistenciaFacturas.procesarBajas(fechaFactura);
+            mensaje2 = persistenciaFacturas.procesarNotificacionesAtrasados();
+            mensaje3 = persistenciaFacturas.facturacionMensual(fechaFactura);
+        } catch (ExcepcionConectar | ExcepcionCerrarConexion | ParseException | SQLException | ExcepcionInactivarAfiliado | ExcepcionInsertarNotificacion | ExcepcionInsertarFactura | ExcepcionListarAfiliados ex) {
             Logger.getLogger(VentanaFacturacion.class.getName()).log(Level.SEVERE, null, ex);
         }
-      
-        JOptionPane.showMessageDialog(null, mensaje);
-    }//GEN-LAST:event_ProcesarActionPerformed
+        JOptionPane.showMessageDialog(null, mensaje1 + mensaje3 + mensaje2);
+    }//GEN-LAST:event_jButton1ActionPerformed
 
     /**
      * @param args the command line arguments
@@ -141,25 +178,33 @@ public class VentanaFacturacion extends javax.swing.JFrame {
                     break;
                 }
             }
-        } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(VentanaFacturacion2.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        } catch (ClassNotFoundException ex) {
+            java.util.logging.Logger.getLogger(VentanaFacturacion.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        } catch (InstantiationException ex) {
+            java.util.logging.Logger.getLogger(VentanaFacturacion.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        } catch (IllegalAccessException ex) {
+            java.util.logging.Logger.getLogger(VentanaFacturacion.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
+            java.util.logging.Logger.getLogger(VentanaFacturacion.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
-        //</editor-fold>
-        
         //</editor-fold>
 
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(() -> {
-            new VentanaFacturacion().setVisible(true);
+         
+                new VentanaFacturacion().setVisible(true);
+            
         });
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton Procesar;
-    private javax.swing.JLabel jLabel1;
-    private javax.swing.JLabel jLabel2;
-    private javax.swing.JLabel jLabel3;
-    private javax.swing.JTextField jTextField1;
-    private javax.swing.JTextField jTextField2;
+    private javax.swing.JButton jButton1;
+    private javax.swing.JLabel jLabel4;
+    private javax.swing.JLabel jLabel5;
+    private javax.swing.JLabel jLabel6;
+    private javax.swing.JLabel jLabel7;
+    private javax.swing.JLabel jLabel9;
+    private javax.swing.JTextField jTextField3;
+    private javax.swing.JLabel labelFechaFactura;
     // End of variables declaration//GEN-END:variables
 }

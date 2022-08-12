@@ -1,13 +1,8 @@
 package presentacion;
 
-import excepciones.ExcepcionAfiliado;
-import excepciones.ExcepcionCerrarConexion;
-import excepciones.ExcepcionConectar;
-import excepciones.ExcepcionNegocio;
+import excepciones.*;
 import javax.swing.JOptionPane;
-import logica.Afiliado;
-import logica.Logica;
-import logica.Negocio;
+import logica.*;
 
 public class VentanaAfiliadosEditar extends javax.swing.JFrame {
     
@@ -29,7 +24,7 @@ public class VentanaAfiliadosEditar extends javax.swing.JFrame {
         campoMail.setText(afiliado.getEmail());
         dateChooserNacimiento.setDate(afiliado.getNacimiento());
         Negocio negocioBuscado = new Negocio();
-        negocioBuscado.setId(afiliado.getNegocio());
+        negocioBuscado.setId(afiliado.getNegocio().getId());
         Negocio negocioEncontrado = new Negocio();
         try {
             Logica logica=new Logica();
@@ -336,7 +331,7 @@ public class VentanaAfiliadosEditar extends javax.swing.JFrame {
             Negocio negocioEncontrado = new Negocio();
             Logica logica=new Logica();
             negocioEncontrado = logica.consultarNegocioPorNombre(negocio);
-            afiliado.setNegocio(negocioEncontrado.getId());
+            afiliado.setNegocio(negocioEncontrado);
 
             int respuesta = JOptionPane.showConfirmDialog(null, "¿Confirma modificaciones?");
             if (respuesta == 0) {
@@ -378,15 +373,12 @@ public class VentanaAfiliadosEditar extends javax.swing.JFrame {
                     break;
                 }
             }
-        } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(VentanaAfiliadosEditar.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(VentanaAfiliadosEditar.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(VentanaAfiliadosEditar.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
+        } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | javax.swing.UnsupportedLookAndFeelException ex) {
             java.util.logging.Logger.getLogger(VentanaAfiliadosEditar.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
+        //</editor-fold>
+        //</editor-fold>
+        
         //</editor-fold>
         //</editor-fold>
 

@@ -6,6 +6,9 @@ import excepciones.ExcepcionConectar;
 import excepciones.ExcepcionConsultaCedula;
 import excepciones.ExcepcionInactivarAfiliado;
 import excepciones.ExcepcionListarAfiliados;
+import excepciones.ExcepcionNegocio;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 import logica.Afiliado;
@@ -67,7 +70,6 @@ public class VentanaAfiliados extends javax.swing.JFrame {
         botonDesafiliar = new javax.swing.JButton();
         botonBuscar = new javax.swing.JButton();
         botonRegresar = new javax.swing.JButton();
-        botonTerminar = new javax.swing.JButton();
         jScrollPane1 = new javax.swing.JScrollPane();
         tabla = new javax.swing.JTable();
         jLabel1 = new javax.swing.JLabel();
@@ -77,6 +79,7 @@ public class VentanaAfiliados extends javax.swing.JFrame {
         botonListar = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DO_NOTHING_ON_CLOSE);
+        setTitle("AFILIADOS");
         setResizable(false);
 
         botonNuevo.setBackground(new java.awt.Color(204, 255, 204));
@@ -117,13 +120,6 @@ public class VentanaAfiliados extends javax.swing.JFrame {
             }
         });
 
-        botonTerminar.setText("X Terminar");
-        botonTerminar.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                botonTerminarActionPerformed(evt);
-            }
-        });
-
         tabla.setModel(columnasTabla());
         cargarTabla();
         jScrollPane1.setViewportView(tabla);
@@ -149,42 +145,40 @@ public class VentanaAfiliados extends javax.swing.JFrame {
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGap(250, 250, 250)
-                        .addComponent(jLabel1))
+                        .addGap(40, 40, 40)
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addComponent(jButton1)
+                                .addGap(21, 21, 21)
+                                .addComponent(jButton2)
+                                .addGap(240, 240, 240)
+                                .addComponent(botonRegresar, javax.swing.GroupLayout.PREFERRED_SIZE, 104, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 560, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGroup(jPanel1Layout.createSequentialGroup()
+                                    .addComponent(campoBuscar, javax.swing.GroupLayout.PREFERRED_SIZE, 140, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                    .addComponent(botonBuscar)
+                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                    .addComponent(botonListar)))))
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addGap(150, 150, 150)
-                        .addComponent(botonNuevo)
-                        .addGap(10, 10, 10)
-                        .addComponent(botonEditar)
-                        .addGap(6, 6, 6)
-                        .addComponent(botonDesafiliar))
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGap(60, 60, 60)
-                        .addComponent(jButton1)
-                        .addGap(21, 21, 21)
-                        .addComponent(jButton2)
-                        .addGap(119, 119, 119)
-                        .addComponent(botonRegresar, javax.swing.GroupLayout.PREFERRED_SIZE, 104, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(16, 16, 16)
-                        .addComponent(botonTerminar, javax.swing.GroupLayout.PREFERRED_SIZE, 105, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGap(40, 40, 40)
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 560, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(jLabel1)
                             .addGroup(jPanel1Layout.createSequentialGroup()
-                                .addComponent(campoBuscar, javax.swing.GroupLayout.PREFERRED_SIZE, 140, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(botonBuscar)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(botonListar)))))
-                .addContainerGap(33, Short.MAX_VALUE))
+                                .addComponent(botonNuevo)
+                                .addGap(10, 10, 10)
+                                .addComponent(botonEditar)))
+                        .addGap(6, 6, 6)
+                        .addComponent(botonDesafiliar)))
+                .addContainerGap(38, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
-                .addGap(20, 20, 20)
+                .addGap(17, 17, 17)
                 .addComponent(jLabel1)
-                .addGap(13, 13, 13)
+                .addGap(18, 18, 18)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addGap(2, 2, 2)
@@ -197,14 +191,14 @@ public class VentanaAfiliados extends javax.swing.JFrame {
                     .addComponent(botonBuscar)
                     .addComponent(botonListar))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 230, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(21, 21, 21)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 112, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jButton1)
-                    .addComponent(jButton2)
-                    .addComponent(botonRegresar)
-                    .addComponent(botonTerminar))
-                .addContainerGap(17, Short.MAX_VALUE))
+                    .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(jButton2)
+                        .addComponent(botonRegresar)))
+                .addContainerGap(30, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -220,13 +214,6 @@ public class VentanaAfiliados extends javax.swing.JFrame {
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
-
-    private void botonTerminarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_botonTerminarActionPerformed
-        int x = JOptionPane.showConfirmDialog(null, "¿Cerrar aplicación?");
-        if (x == 0) {
-            System.exit(0);
-        }
-    }//GEN-LAST:event_botonTerminarActionPerformed
 
     private void botonRegresarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_botonRegresarActionPerformed
         this.dispose();
@@ -258,6 +245,8 @@ public class VentanaAfiliados extends javax.swing.JFrame {
                 model.addRow(datos);
             } catch (ExcepcionConsultaCedula | ExcepcionCedulaNoEncontrada | ExcepcionConectar | ExcepcionCerrarConexion ex) {
                 JOptionPane.showMessageDialog(null, ex.getMessage());
+            } catch (ExcepcionNegocio ex) {
+                Logger.getLogger(VentanaAfiliados.class.getName()).log(Level.SEVERE, null, ex);
             }
             campoBuscar.setText("");
         }
@@ -289,6 +278,8 @@ public class VentanaAfiliados extends javax.swing.JFrame {
                 afiliadoEncontrado = logica.consultaAfiliadoPorCedula(afiliadoBuscado);
             } catch ( ExcepcionConsultaCedula | ExcepcionCedulaNoEncontrada | ExcepcionConectar | ExcepcionCerrarConexion ex) {
                 JOptionPane.showMessageDialog(this, ex.getMessage());
+            } catch (ExcepcionNegocio ex) {
+                Logger.getLogger(VentanaAfiliados.class.getName()).log(Level.SEVERE, null, ex);
             }
             this.dispose();
             VentanaAfiliadosEditar ventanaEditar = new VentanaAfiliadosEditar();
@@ -392,7 +383,6 @@ public class VentanaAfiliados extends javax.swing.JFrame {
     private javax.swing.JButton botonListar;
     private javax.swing.JButton botonNuevo;
     private javax.swing.JButton botonRegresar;
-    private javax.swing.JButton botonTerminar;
     private javax.swing.JTextField campoBuscar;
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;

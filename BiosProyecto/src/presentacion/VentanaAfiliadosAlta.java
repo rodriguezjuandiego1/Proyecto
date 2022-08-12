@@ -333,7 +333,7 @@ public class VentanaAfiliadosAlta extends javax.swing.JFrame {
             Logica logica=new Logica();
             negocioEncontrado = logica.consultarNegocioPorNombre(negocio);
 
-            afiliado.setNegocio(negocioEncontrado.getId());
+            afiliado.setNegocio(negocioEncontrado);
             afiliado.setEstado("activo");
 
             Afiliacion afiliacion = new Afiliacion();
@@ -341,7 +341,7 @@ public class VentanaAfiliadosAlta extends javax.swing.JFrame {
             long fechaEnMilisegundos = fecha.getTime();
             java.sql.Date fecha2 = new java.sql.Date(fechaEnMilisegundos);
             afiliacion.setFecha(fecha2);
-            afiliacion.setCedula(campoCedula.getText());
+            afiliacion.setAfiliado(afiliado);
 
             int respuesta = JOptionPane.showConfirmDialog(null, "¿Confirma la afiliación?");
             if (respuesta == 0) {
@@ -349,6 +349,7 @@ public class VentanaAfiliadosAlta extends javax.swing.JFrame {
                     Logica logica2=new Logica();
                     logica2.insertarAfiliado(afiliado);
                     logica2.insertarAfiliacion(afiliacion);
+                    
                     JOptionPane.showMessageDialog(null, "Afiliación realizada con éxito");
                     this.dispose();
                     VentanaAfiliados va = new VentanaAfiliados();

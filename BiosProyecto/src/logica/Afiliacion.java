@@ -6,8 +6,7 @@ import java.sql.Date;
 public class Afiliacion {
     
     private Date fecha;
-    private String cedula;
-    private String importe;
+    private Afiliado afiliado;
 
     public Date getFecha() {
         return fecha;
@@ -17,23 +16,14 @@ public class Afiliacion {
         this.fecha = fecha;
     }
 
-    public String getCedula() {
-        return cedula;
+    public Afiliado getAfiliado() {
+        return afiliado;
     }
 
-    public void setCedula(String cedula) {
-        this.cedula = cedula;
+    public void setAfiliado(Afiliado afiliado) {
+        this.afiliado = afiliado;
     }
 
-    public String getImporte() {
-        return importe;
-    }
-
-    public void setImporte(String importe) {
-        this.importe = importe;
-    }
-    
-    
     
     
 }

@@ -2,8 +2,7 @@ package persistencia;
 
 import excepciones.*;
 import java.sql.*;
-import logica.Afiliado;
-import logica.Afiliados;
+import logica.*;
 
 public class PersistenciaAfiliados {
 
@@ -14,7 +13,10 @@ public class PersistenciaAfiliados {
             + "`nacionalidad`, `direccion`, `telefono`, `email`, `nacimiento`, `negocios_idNegocios`, `estado`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
     private final String UPDATE = "UPDATE `adn`.`afiliados` SET `nombre` = ?, `apellido` = ?, `nacionalidad` = ?, `direccion` = ?,"
             + "`telefono` = ?, `email` = ?, `nacimiento` = ?, `negocios_idNegocios` = ? WHERE (`cedula` = ?);";
+    private final String DAR_DE_BAJA = "UPDATE `adn`.`afiliados` SET `estado` = 'inactivo', `fecha_baja` = ? WHERE (`cedula` = ?);";
 
+    
+    
     public Afiliados listarAfiliadosActivos() throws ExcepcionListarAfiliados, ExcepcionConectar, ExcepcionCerrarConexion {
 
         Afiliados afiliados = new Afiliados();
@@ -39,7 +41,7 @@ public class PersistenciaAfiliados {
         return afiliados;
     }
 
-    public Afiliado consultaCedula(Afiliado afiliado) throws ExcepcionConsultaCedula, ExcepcionCedulaNoEncontrada, ExcepcionConectar, ExcepcionCerrarConexion {
+    public Afiliado consultaCedula(Afiliado afiliado) throws ExcepcionConsultaCedula, ExcepcionCedulaNoEncontrada, ExcepcionConectar, ExcepcionCerrarConexion, ExcepcionNegocio {
         ResultSet resultado = null;
         PersistenciaConexion conectar = new PersistenciaConexion();
         Connection conexion = conectar.Conectar();
@@ -58,7 +60,10 @@ public class PersistenciaAfiliados {
                 afiliado.setTelefono(resultado.getString("telefono"));
                 afiliado.setEmail(resultado.getString("email"));
                 afiliado.setNacimiento(resultado.getDate("nacimiento"));
-                afiliado.setNegocio(resultado.getString("negocios_idNegocios"));
+                Negocio negocio=new Negocio();
+                negocio.setId(resultado.getString("negocios_idNegocios"));
+                PersistenciaNegocios persistenciaNegocios=new PersistenciaNegocios();
+                afiliado.setNegocio(persistenciaNegocios.consultarNegocioPorId(negocio));
                 afiliado.setEstado(resultado.getString("estado"));
             }
             if (cedulaExiste == false) {
@@ -97,7 +102,7 @@ public class PersistenciaAfiliados {
         return mensaje;
 
     }
-
+    
     public void insertarAfiliado(Afiliado afiliado) throws ExcepcionInsertarAfiliado, ExcepcionConectar, ExcepcionCerrarConexion {
         PersistenciaConexion conectar = new PersistenciaConexion();
         Connection conexion = conectar.Conectar();
@@ -112,7 +117,7 @@ public class PersistenciaAfiliados {
             consultaPreparada.setString(7, afiliado.getEmail());
             String fecha = String.format("%1$tY-%1$tm-%1$td", afiliado.getNacimiento());
             consultaPreparada.setString(8, fecha);
-            consultaPreparada.setString(9, afiliado.getNegocio());
+            consultaPreparada.setString(9, afiliado.getNegocio().getId());
             consultaPreparada.setString(10, afiliado.getEstado());
             consultaPreparada.executeUpdate();
 
@@ -138,7 +143,7 @@ public class PersistenciaAfiliados {
             consultaPreparada.setString(6, afiliado.getEmail());
             String fecha = String.format("%1$tY-%1$tm-%1$td", afiliado.getNacimiento());
             consultaPreparada.setString(7, fecha);
-            consultaPreparada.setString(8, afiliado.getNegocio());
+            consultaPreparada.setString(8, afiliado.getNegocio().getId());
             consultaPreparada.setString(9, afiliado.getCedula());
             registrosModificados = consultaPreparada.executeUpdate();
             if (registrosModificados == 0) {
@@ -151,4 +156,32 @@ public class PersistenciaAfiliados {
         }
 
     }
+
+    public void inactivarAfiliado(Afiliado afiliado, java.util.Date fechaBaja) throws ExcepcionConectar, ExcepcionInactivarAfiliado, ExcepcionCerrarConexion {
+        int resultado;
+        //String mensaje;
+        PersistenciaConexion conectar = new PersistenciaConexion();
+        Connection conexion = conectar.Conectar();
+        try {
+
+            PreparedStatement consultaPreparada = conexion.prepareStatement(DAR_DE_BAJA);
+            consultaPreparada.setDate(1, new java.sql.Date(fechaBaja.getTime())); 
+            consultaPreparada.setString(2, afiliado.getCedula());
+            
+
+             resultado = consultaPreparada.executeUpdate();
+//            if (resultado == 0) {
+//                mensaje = "No se pudo realizar la desafiliación";
+//            } else {
+//                mensaje = "Desafiliación realizada correctamente";
+//            }
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+            throw new ExcepcionInactivarAfiliado("No se pudo dar de baja");
+        } finally {
+            conectar.cerrarConexion();
+        }
+        //return mensaje;
+    }
+    
 }

@@ -12,8 +12,9 @@ public class Afiliado {
     private String telefono;
     private String email;
     private Date nacimiento;
-    private String negocio;
+    private Negocio negocio;
     private String estado;
+    private Date fechaBaja;
 
     public String getCedula() {
         return cedula;
@@ -79,11 +80,11 @@ public class Afiliado {
         this.nacimiento = nacimiento;
     }
 
-    public String getNegocio() {
+    public Negocio getNegocio() {
         return negocio;
     }
 
-    public void setNegocio(String negocio) {
+    public void setNegocio(Negocio negocio) {
         this.negocio = negocio;
     }
 
@@ -93,6 +94,14 @@ public class Afiliado {
 
     public void setEstado(String estado) {
         this.estado = estado;
+    }
+
+    public Date getFechaBaja() {
+        return fechaBaja;
+    }
+
+    public void setFechaBaja(Date fechaBaja) {
+        this.fechaBaja = fechaBaja;
     }
     
     
